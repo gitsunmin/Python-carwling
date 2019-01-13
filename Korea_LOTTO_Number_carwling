@@ -1,0 +1,25 @@
+import requests
+import re
+
+total_LOTTO_number_list=[]
+start_number=1 # Please write the beginning of the Crawling Lotto.
+end_number=200 # Please write the ending of the Crawling Lotto.
+for time in range(start_number,end_number,1):
+    url='https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo='+str(time)
+    webpage= requests.get(url)
+    LOTTOnumbersource=str(webpage.content)
+    LOTTO_number_list=[]
+    find_class_num=LOTTOnumbersource.find("num win")
+    find_class_bonus_num=LOTTOnumbersource.find("tbl_data tbl_data_col")
+    LOTTO_number_class_loca=LOTTOnumbersource[find_class_num:find_class_bonus_num]
+
+    replacing_source=LOTTO_number_class_loca.replace('\\t','').replace("\\n","").replace("\\r","")
+    patten=re.compile('>[0-9]+<')
+    not_number_list=patten.findall(replacing_source)
+    for num in not_number_list:
+        LOTTO_number_list.append(num.strip("> <"))
+    
+    total_LOTTO_number_list.append(LOTTO_number_list)
+
+
+print(total_LOTTO_number_list)
